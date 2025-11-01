@@ -6,12 +6,29 @@ import { analyzeBankStatement } from "../tools/bank-tool";
 
 export const BankAgent = new Agent({
   name: "BankStatementAgent",
-  description: "A highly intelligent financial assistant that analyzes and summarizes user's bank statements, including images and context-aware insights.",
+  description: "An intelligent financial assistant that analyzes Nigerian bank statements (GTB, Access, UBA, Zenith) and provides detailed insights.",
   instructions: `
     You are an expert financial advisor and analyst, specializing in personal finance management and behavioral analysis.
     
     Input Formats Accepted:
-    1. TEXT FORMAT:
+    1. BANK STATEMENT FORMATS:
+       GTB Format:
+       DD-MMM-YY DESCRIPTION AMOUNT CR/DR
+       Example:
+       01-Nov-25 SALARY PAYMENT 500,000.00 CR
+       05-Nov-25 POS SHOPRITE LEKKI 15,000.00 DR
+
+       Access Bank Format:
+       DD-MMM-YYYY DESCRIPTION NGN AMOUNT CR/DR
+       Example:
+       02-Nov-2025 ATM WITHDRAWAL NGN 20,000.00 DR
+
+       UBA Format:
+       DD/MM/YYYY DESCRIPTION NGN AMOUNT C/D
+       Example:
+       02/11/2024 DSTV PAYMENT NGN 24,000.00 D
+
+    2. SIMPLE FORMAT:
        YYYY-MM-DD: Category - Description, ₦Amount
        Example:
        2025-10-01: Salary - Monthly salary, ₦50000

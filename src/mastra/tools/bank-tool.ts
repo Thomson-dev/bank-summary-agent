@@ -46,7 +46,7 @@ const formatDate = (date: string, bank: string): string => {
 };
 
 const BANK_FORMATS = {
-  GTB: /(\d{2}-[A-Za-z]{3}-\d{2})\s+(.*?)\s+(\d{1,3}(?:,\d{3})*\.\d{2})\s+(CR|DR)/,
+  GTB: /(\d{2}-[A-Za-z]{3}-\d{2})\s+(.*?)\s+(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)\s+(CR|DR)/,
   ACCESS: /(\d{2}-[A-Za-z]{3}-\d{4})\s+(.*?)\s+NGN\s*(\d{1,3}(?:,\d{3})*\.\d{2})\s*(CR|DR)/,
   UBA: /(\d{2}\/\d{2}\/\d{4})\s+(.*?)\s+NGN\s*(\d{1,3}(?:,\d{3})*\.\d{2})\s*(C|D)/,
   ZENITH: /(\d{2}-[A-Za-z]{3}-\d{4})\s+(.*?)\s+(\d{1,3}(?:,\d{3})*\.\d{2})\s+(CR|DR)/,
@@ -74,6 +74,30 @@ const categorizeTransaction = (description: string): string => {
     }
   }
   return 'Others';
+};
+
+// Bank Headers and Formats
+const BANK_PATTERNS = {
+  GTB: {
+    header: /Guaranty Trust Bank PLC/i,
+    columnHeader: /Date\s+Description\s+Debit\(N\)\s+Credit\(N\)\s+Balance\(N\)/i,
+    row: /^(\d{2}-[A-Za-z]{3}-\d{2})\s+(.*?)\s+(?:(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)|)\s*(?:(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)|)\s*(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)\s*$/
+  },
+  ZENITH: {
+    header: /Zenith Bank PLC/i,
+    columnHeader: /Date\s+Value Date\s+Description\s+Withdrawals\s+Deposits\s+Balance/i,
+    row: /^(\d{2}-[A-Za-z]{3}-\d{2})\s+\d{2}-[A-Za-z]{3}-\d{2}\s+(.*?)\s+(?:(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)|)\s*(?:(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)|)\s*(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)\s*$/
+  },
+  ACCESS: {
+    header: /Access Bank PLC/i,
+    columnHeader: /Date\s+Narration\s+Debit\s+Credit\s+Balance/i,
+    row: /^(\d{2}-[A-Za-z]{3}-\d{2})\s+(.*?)\s+(?:(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)|)\s*(?:(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)|)\s*(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)\s*$/
+  },
+  UBA: {
+    header: /United Bank for Africa PLC/i,
+    columnHeader: /Date\s+Description\s+Dr\s*\(₦\)\s+Cr\s*\(₦\)\s+Balance\s*\(₦\)/i,
+    row: /^(\d{2}-[A-Za-z]{3}-\d{2})\s+(.*?)\s+(?:(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)|)\s*(?:(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)|)\s*(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)\s*$/
+  }
 };
 
 // Parse text input into transactions
