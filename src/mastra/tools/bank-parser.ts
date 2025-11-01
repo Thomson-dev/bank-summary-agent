@@ -119,7 +119,7 @@ export const parseBankStatement = (text: string): Transaction[] => {
             description: description.trim(),
             category: categorizeTransaction(description),
             amount: type === 'CR' ? parseFloat(amount.replace(/,/g, '')) : -parseFloat(amount.replace(/,/g, ''))
-          };
+          } as Transaction;
         }
         return null;
       })
