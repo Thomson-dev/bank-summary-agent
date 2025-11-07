@@ -82,7 +82,7 @@ interface ApiContext {
     json: ApiResponse;
 }
 
-export const agentApiRoute = registerApiRoute('/agent/:agentId', {
+export const agentApiRoute = registerApiRoute('/a2a/agent/:agentId', {  // Changed from '/agent/:agentId'
     method: 'POST',
     handler: async (c: ApiContext) => {
         try {
@@ -90,23 +90,31 @@ export const agentApiRoute = registerApiRoute('/agent/:agentId', {
             const agentId: string = c.req.param('agentId');
             const body: JsonRpcRequest = await c.req.json();
 
-            // JSON-RPC validation
+            // Enhanced JSON-RPC validation
             const { jsonrpc, id: requestId, method, params } = body;
-            if (jsonrpc !== '2.0' || !requestId) {
+            if (jsonrpc !== '2.0' || !requestId || method !== 'message/send') {  // Added method check
                 return c.json({
                     jsonrpc: '2.0',
                     id: requestId || null,
-                    error: { code: -32600, message: 'Invalid Request' }
+                    error: { 
+                        code: -32600, 
+                        message: 'Invalid Request: requires jsonrpc 2.0, id, and method: message/send' 
+                    }
                 }, 400);
             }
 
-            // Get agent
+            // Get agent with logging
+            console.log(`🔍 Looking for agent: ${agentId}`);
             const agent = mastra.getAgent(agentId);
             if (!agent) {
+                console.error(`❌ Agent not found: ${agentId}`);
                 return c.json({
                     jsonrpc: '2.0',
                     id: requestId,
-                    error: { code: -32602, message: `Agent '${agentId}' not found` }
+                    error: { 
+                        code: -32602, 
+                        message: `Agent '${agentId}' not found` 
+                    }
                 }, 404);
             }
 
@@ -191,13 +199,17 @@ export const agentApiRoute = registerApiRoute('/agent/:agentId', {
             });
 
         } catch (error: any) {
+            console.error('❌ Error in agent route:', error);
             return c.json({
                 jsonrpc: '2.0',
                 id: null,
                 error: {
                     code: -32603,
                     message: 'Internal error',
-                    data: { details: error?.message }
+                    data: { 
+                        details: error?.message,
+                        stack: process.env.NODE_ENV === 'development' ? error?.stack : undefined
+                    }
                 }
             }, 500);
         }

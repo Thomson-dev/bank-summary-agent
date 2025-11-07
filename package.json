@@ -9,7 +9,9 @@
     "build": "mastra build",
     "start": "mastra start",
     "test:bank": "tsx --env-file=.env src/test-bank.ts",
-    "test:bank:detailed": "tsx --env-file=.env src/test-bank-detailed.ts"
+    "test:bank:detailed": "tsx --env-file=.env src/test-bank-detailed.ts",
+    "test:local": "tsx --env-file=.env src/test-bank-local.ts",
+    "test:telex": "tsx --env-file=.env src/test-bank-telex.ts"
   },
   "keywords": [],
   "author": "",
